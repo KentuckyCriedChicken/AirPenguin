@@ -11,18 +11,6 @@ for i in range(4):
 
 
 def Main_Menu():
-   
-    #initialising
-    global app
-    app = customtkinter.CTk()
-    app.title("Fly Penguin")
-    app.geometry("900x700")
-
-
-    #4 by 4 grid 
-    for i in range(4):
-        app.columnconfigure(i, weight=1)
-
     main_title = customtkinter.CTkLabel(app, text="Welcome To Fly Penguin",text_color="white", font=("Bahnschrift",60) )
     main_title.grid(row=1, column=1, padx=20, columnspan=2, pady=20)
 
