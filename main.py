@@ -1,8 +1,14 @@
 import customtkinter
+import mysql.connector
+from CTkMessagebox import CTkMessagebox
 
 app = customtkinter.CTk()
 app.title("Fly Penguin")
 app.geometry("900x700")
+
+mydb = mysql.connector.connect(host="localhost", user="root", password="root", database="reservation_system")
+print(mydb)
+mycursor = mydb.cursor()
 
 #4 by 4 grid 
 for i in range(4):
@@ -38,7 +44,22 @@ sdestination.grid(row=3, column=1, padx=40)
 sday = customtkinter.CTkOptionMenu(search_flights, width=200, values=["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], anchor="center")
 sday.grid(row=4, column=1, padx=40)
 
-search = customtkinter.CTkButton(search_flights, text="Search", height=40, width=200, font=("Bahnschrift", 25 ), fg_color="#525252", hover_color="#808080")
+
+def search_func():
+     a = sboarding.get()
+     b = sdestination.get()
+     c = sday.get()
+
+     if a!=b:
+          ex= "select Times from available_flights where Boarding='{}'".format(a)
+          mycursor.execute(ex)
+          time= mycursor.fetchall()
+          CTkMessagebox(title="Available Flights", message= f"Flights are available at {time}")
+     else:
+          CTkMessagebox(title="ERROR", message="Boarding and Destination can't be the same!")
+
+
+search = customtkinter.CTkButton(search_flights, text="Search", height=40, width=200, font=("Bahnschrift", 25 ), fg_color="#525252", hover_color="#808080", command=search_func)
 search.grid(row=5, column=0, columnspan=2, pady=15)
 
 
