@@ -55,7 +55,7 @@ def search_func():
           time= mycursor.fetchall()
           CTkMessagebox(title="Available Flights", message= f"Flights are available at {time}")
      else:
-          CTkMessagebox(title="ERROR", message="Boarding and Destination can't be the same!")
+          CTkMessagebox(title="ERROR", message="Boarding and Destination can't be the same!", icon="cancel", sound=1)
 
 
 search = customtkinter.CTkButton(search_flights, text="Search", height=40, width=200, font=("Bahnschrift", 25 ), fg_color="#525252", hover_color="#808080", command=search_func)
@@ -105,17 +105,23 @@ def book_func():
           for y in x:
                if f in y:
                      if c == '':
-                          CTkMessagebox(title="ERROR", message="Please enter your Aadhar number!")
+                          CTkMessagebox(title="ERROR", message="Please enter your Aadhar number!", icon="warning", sound=1)
                      else:
                           if a!=b:
-                               ex = "insert into booking_details values('{}', '{}', {}, '{}', '{}', '{}')".format(a, b, c, d, e, f)
+                               ex = 'select * from booking_details where Boarding = "{}" and Aadhar = {} and Class = "{}"'.format(a, c, d)
                                mycursor.execute(ex)
-                               mydb.commit()
-                               CTkMessagebox(title="Booking Confirmation", message="Your seat has been reserved")
+                               result = mycursor.fetchall()
+                               if len(result) == 0:
+                                    ex2 = "insert into booking_details values('{}', '{}', {}, '{}', '{}', '{}')".format(a, b, c, d, e, f)
+                                    mycursor.execute(ex2)
+                                    mydb.commit()
+                                    CTkMessagebox(title="Booking Confirmation", message="Your seat has been reserved", icon="check")
+                               else:
+                                    CTkMessagebox(title="ERROR", message="Reservation already exists!", icon="warning", sound=1)
                           else:
-                               CTkMessagebox(title="ERROR", message="Boarding and Destination can't be the same!")
+                               CTkMessagebox(title="ERROR", message="Boarding and Destination can't be the same!", icon="cancel", sound=1)
                else:
-                    CTkMessagebox(title="Error", message="No flights are available at this time!")
+                    CTkMessagebox(title="Error", message="No flights are available at this time!", icon="cancel", sound=1)
 
 
 book = customtkinter.CTkButton(book_flight, text="Book", height=40, width=200, font=("Bahnschrift", 25 ), fg_color="#525252", hover_color="#808080", command=book_func)
@@ -139,19 +145,21 @@ cboarding.grid(row=4, column=1, padx=40)
 
 def cancel_func():
      a = caadhar.get()
+     b = cclass.get()
+     c = cboarding.get()
      if a == '':
-          CTkMessagebox(title="ERROR", message="Please enter your Aadhar number!")
+          CTkMessagebox(title="ERROR", message="Please enter your Aadhar number!", icon="warning", sound=1)
      else:
-          ex = 'select * from booking_details where Aadhar = "{}"'.format(a)
+          ex = 'select * from booking_details where Aadhar = {} and Class = "{}" and Boarding = "{}"'.format(a, b, c)
           mycursor.execute(ex)
           result = mycursor.fetchall()
           if len(result) == 0:
-               CTkMessagebox(title="ERROR", message="Reservation does not exist!")
+               CTkMessagebox(title="ERROR", message="Reservation does not exist!", icon="cancel", sound=1)
           else:
-               ex2= 'delete from booking_details where Aadhar = "{}"'.format(a)
+               ex2= 'delete from booking_details where Aadhar = {} and Class = "{}" and Boarding = "{}"'.format(a, b, c)
                mycursor.execute(ex2)
                mydb.commit()
-               CTkMessagebox(title="Cancelled successfully", message="Your reservation has been cancelled")
+               CTkMessagebox(title="Cancelled successfully", message="Your reservation has been cancelled", icon="check")
 
 cancel = customtkinter.CTkButton(cancel_booking, text="Cancel booking", height=40, width=200, font=("Bahnschrift", 23 ), fg_color="#525252", hover_color="#808080", command=cancel_func)
 cancel.grid(row=5, column=0, columnspan=2, pady=25)
