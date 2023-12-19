@@ -5,6 +5,7 @@ from CTkMessagebox import CTkMessagebox
 app = customtkinter.CTk()
 app.title("Fly Penguin")
 app.geometry("900x700")
+customtkinter.set_appearance_mode("dark")
 
 mydb = mysql.connector.connect(host="localhost", user="root", password="root", database="reservation_system")
 print(mydb)
